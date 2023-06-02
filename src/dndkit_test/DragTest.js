@@ -11,7 +11,7 @@ const DragTest = (props) => {
   } : undefined
 
   return (
-    <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <button ref={setNodeRef} style={style} {...listeners} {...attributes} className="btn">
       {props.children}
     </button>
   )

@@ -4,12 +4,13 @@ import {DndContext} from '@dnd-kit/core';
 
 import DragTest from './DragTest';
 import DropTest from './DropTest';
+import DragBufferTest from './DragBufferTest';
 
 const DragNDropTest = () => {
   const containers = ['A', 'B', 'C']
   const [parent, setParent] = useState(null)
   const draggableMarkup = (
-    <DragTest id="draggable">Drag me</DragTest>
+    <DragBufferTest id="draggable">Drag me</DragBufferTest>
   )
 
   function handleDragEnd(event) {

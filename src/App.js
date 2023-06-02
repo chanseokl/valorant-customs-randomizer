@@ -1,10 +1,11 @@
 import './App.css';
-import Agent from './components/Agent'
+import RandomizeButtons from './components/RandomizeButtons';
 import DragNDropTest from './dndkit_test/DragNDropTest';
 
 function App() {
   return (
     <div>
+      <RandomizeButtons />
       <DragNDropTest />
     </div>
   );
