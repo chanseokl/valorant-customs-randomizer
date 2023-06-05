@@ -1,12 +1,14 @@
 import './App.css';
+import MainSelection from './components/MainSelection';
 import RandomizeButtons from './components/RandomizeButtons';
-import DragNDropTest from './dndkit_test/DragNDropTest';
+import SubSelection from './components/SubSelection';
 
 function App() {
   return (
     <div>
       <RandomizeButtons />
-      <DragNDropTest />
+      <MainSelection />
+      <SubSelection />
     </div>
   );
 }

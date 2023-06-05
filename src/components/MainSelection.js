@@ -5,8 +5,10 @@ import MapSelect from './MapSelect';
 
 const MainSelection = () => {
   return (
-    <div>
-      
+    <div className='main'>
+      <AttackTeam />
+      <MapSelect />
+      <DefendTeam />
     </div>
   )
 }
