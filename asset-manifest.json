@@ -1,17 +1,15 @@
 {
   "files": {
-    "main.css": "/valorant-customs-randomizer/static/css/main.80942ded.css",
-    "main.js": "/valorant-customs-randomizer/static/js/main.5323d282.js",
+    "main.css": "/valorant-customs-randomizer/static/css/main.bdaad422.css",
+    "main.js": "/valorant-customs-randomizer/static/js/main.a71a1fd1.js",
     "static/js/787.64ae2c3e.chunk.js": "/valorant-customs-randomizer/static/js/787.64ae2c3e.chunk.js",
-    "static/media/default-icon.png": "/valorant-customs-randomizer/static/media/default-icon.312b707a418dc8d35116.png",
-    "static/media/neon-icon.png": "/valorant-customs-randomizer/static/media/neon-icon.312b707a418dc8d35116.png",
     "index.html": "/valorant-customs-randomizer/index.html",
-    "main.80942ded.css.map": "/valorant-customs-randomizer/static/css/main.80942ded.css.map",
-    "main.5323d282.js.map": "/valorant-customs-randomizer/static/js/main.5323d282.js.map",
+    "main.bdaad422.css.map": "/valorant-customs-randomizer/static/css/main.bdaad422.css.map",
+    "main.a71a1fd1.js.map": "/valorant-customs-randomizer/static/js/main.a71a1fd1.js.map",
     "787.64ae2c3e.chunk.js.map": "/valorant-customs-randomizer/static/js/787.64ae2c3e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.80942ded.css",
-    "static/js/main.5323d282.js"
+    "static/css/main.bdaad422.css",
+    "static/js/main.a71a1fd1.js"
   ]
 }
