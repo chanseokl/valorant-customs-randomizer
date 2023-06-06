@@ -2,7 +2,6 @@ import React from 'react';
 import {useState} from 'react'
 import {DndContext} from '@dnd-kit/core';
 
-import DragTest from './DragTest';
 import DropTest from './DropTest';
 import DragBufferTest from './DragBufferTest';
 

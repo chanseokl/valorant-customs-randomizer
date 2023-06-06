@@ -5,8 +5,7 @@ import SubSelection from './components/SubSelection';
 
 function App() {
   return (
-    <div>
-      <RandomizeButtons />
+    <div className='everything'>
       <MainSelection />
       <SubSelection />
     </div>
