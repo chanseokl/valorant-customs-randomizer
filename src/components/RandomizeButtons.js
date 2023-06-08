@@ -3,7 +3,7 @@ import { FaRandom } from 'react-icons/fa'
 
 const RandomizeButtons = () => {
   return (
-    <div className='randomizers'>
+    <div className='Randomize-Buttons'>
       <div>
         <button className='btn btn-randomize'>RANDOMIZE <FaRandom /> </button>
       </div>

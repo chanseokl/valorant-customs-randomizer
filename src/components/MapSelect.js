@@ -3,7 +3,7 @@ import RandomizeButtons from './RandomizeButtons'
 
 const MapSelect = () => {
   return (
-    <div className='main__map'>
+    <div className='Map-Select'>
       <RandomizeButtons />
       <div>Map Name</div>
       <div>Composition Select</div>

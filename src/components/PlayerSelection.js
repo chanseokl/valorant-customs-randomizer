@@ -1,9 +1,13 @@
 import React from 'react'
+import PlayerName from './PlayerName'
 
-const PlayersSelection = () => {
+const PlayerSelection = () => {
   return (
-    <div className='player-selection'>
-      <div className='player-names'>Player names</div>
+    <div className='Player-Selection'>
+      <div className='player-names'>
+        <PlayerName />
+        <PlayerName />
+      </div>
       <div className='player-input'>
         <label className='player-input-label'>Add Player</label>
         <form /*onSubmit={onSubmit} */>
@@ -15,4 +19,4 @@ const PlayersSelection = () => {
   )
 }
 
-export default PlayersSelection
+export default PlayerSelection

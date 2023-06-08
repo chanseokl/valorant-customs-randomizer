@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Agent = ({ name, color }) => {
+const Map = ({ name, color }) => {
   return (
     <div
-      className='Agent'
+      className='Map'
       style={{ backgroundColor: color}}>
       <img src={require(`../assets/agents/${name}-icon.png`)}/>
       {name}
@@ -11,9 +11,9 @@ const Agent = ({ name, color }) => {
   )
 }
 
-Agent.defaultProps = {
+Map.defaultProps = {
   name: 'default',
   color: 'black'
 }
 
-export default Agent
+export default Map

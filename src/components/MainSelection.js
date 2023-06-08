@@ -1,14 +1,13 @@
 import React from 'react'
-import AttackTeam from './AttackTeam';
-import DefendTeam from './DefendTeam';
 import MapSelect from './MapSelect';
+import Team from './Team';
 
 const MainSelection = () => {
   return (
-    <div className='main'>
-      <AttackTeam />
+    <div className='Main-Selection'>
+      <Team isAttack={true} />
       <MapSelect />
-      <DefendTeam />
+      <Team isAttack={false} />
     </div>
   )
 }

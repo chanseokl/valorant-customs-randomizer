@@ -1,13 +1,13 @@
 import React from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import PlayersSelection from './PlayersSelection';
-import AgentsSelection from './AgentsSelection';
-import MapsSelection from './MapsSelection';
+import PlayerSelection from './PlayerSelection';
+import AgentSelection from './AgentSelection';
+import MapSelection from './MapSelection';
 
 const SubSelection = () => {
   return (
-    <div className="sub-selection">
+    <div className="Sub-Selection">
       <Tabs>
         <TabList>
           <Tab>Players</Tab>
@@ -16,13 +16,13 @@ const SubSelection = () => {
         </TabList>
 
         <TabPanel>
-          <PlayersSelection />
+          <PlayerSelection />
         </TabPanel>
         <TabPanel>
-          <AgentsSelection />
+          <AgentSelection />
         </TabPanel>
         <TabPanel>
-          <MapsSelection />
+          <MapSelection />
         </TabPanel>
       </Tabs>
     </div>
