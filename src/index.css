@@ -70,8 +70,7 @@ body {
 .player-slot__info {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  margin: auto;
   font-size: 12px;
 }
 
@@ -79,11 +78,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   width: 500px;
-  border: 1px solid steelblue;
   margin: 5px auto;
   background-color: #375d7b;
+}
+
+.map-name {
+  padding: 4px;
+  background-color: black;
+  margin: 10px;
+  border: 1px solid rgb(148, 147, 147);
 }
 
 .Randomize-Buttons {
@@ -137,6 +141,21 @@ body {
   margin: 10px;
 }
 
+.lock {
+  cursor: pointer;
+}
+
+.Composition-Select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #3c4348;
+  border: 1px solid steelblue;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+
 .Sub-Selection {
   width: 900px;
   height: 350px;
@@ -169,19 +188,30 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  position: relative;
   border: 1px solid steelblue;
   background-color: #425666;
   margin: 5px;
-  padding: 0px 3px;
   font-size: 15px;
   border-radius: 5px;
+}
+
+.player-name-text {
+  background-color: #324352;
+  padding: 4px;
+  cursor: grab;
 }
 
 .add-team-btns {
   display: flex;
   flex-direction: column;
   color: white;
-  margin: 4px;
+  margin: 2px;
+}
+
+.team-btn {
+  color: white;
+  cursor: pointer;
 }
 
 .player-input {
@@ -235,6 +265,13 @@ body {
   padding: 5px;
   border: 1px solid steelblue;
   background-color: #375d7b;
+  overflow: auto;
+}
+
+.agent-category {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .agent-class-list {
@@ -243,27 +280,41 @@ body {
   align-items: flex-start;
   padding: 2px;
   margin: 2px;
-  border: 1px solid red;
 }
 
-.remove-agents {
+.remove{
   display: flex;
   flex-direction: column;
-  width: 30%;
+  width: 31%;
+  height: 250px;
   border: 1px solid steelblue;
   background-color:darkred;
+}
+
+.removed {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  margin: 1px;
+  overflow: auto;
 }
 
 .Agent {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  position: relative;
   color: white;
   height: 70px;
-  padding: 4px;
+  padding: 1px;
   margin: 5px;
-  border: 1px solid steelblue;
+  cursor: grab;
   border-radius: 5px;
+}
+
+.agent-image {
+  width: 60px;
 }
 
 .Map-Selection {
@@ -274,7 +325,7 @@ body {
 
 .map-collection {
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   align-items: flex-start;
   width: 68%;
   height: 250px;
@@ -283,25 +334,74 @@ body {
   background-color: #375d7b;
 }
 
-.remove-maps {
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-  border: 1px solid steelblue;
-  background-color:darkred;
-}
-
 .Map {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  position: relative;
   color: white;
   height: 70px;
-  padding: 4px;
   margin: 5px;
-  border: 1px solid steelblue;
+  cursor: grab;
   border-radius: 5px;
 }
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.top-right-agent {
+  position: absolute;
+  top: 10%;
+  left: 85%;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.top-right {
+  position: absolute;
+  top: 0%;
+  left: 100%;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.visible {
+  opacity: 1;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.empty-slot {
+  font-style: italic;
+  border-bottom: 2px black dashed;
+}
+
+.unlocked-slot {
+  border: 2px black dashed;
+  padding: 2px;
+}
+
+.locked-slot {
+  border: 2px black solid;
+  padding: 2px;
+}
+
+.unlock-unavailable {
+  cursor: not-allowed;
+  opacity: 50%;
+}
+
+.lock-available {
+  cursor: pointer;
+  margin: 2px;
+}
+
+
 
 
 .container {

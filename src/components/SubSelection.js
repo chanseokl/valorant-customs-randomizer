@@ -5,7 +5,14 @@ import PlayerSelection from './PlayerSelection';
 import AgentSelection from './AgentSelection';
 import MapSelection from './MapSelection';
 
-const SubSelection = () => {
+const SubSelection = ({ 
+  playerNames,
+  addPlayer,
+  removePlayer,
+  addPlayerNameToTeam,
+  removeAgent,
+  removeMap
+ }) => {
   return (
     <div className="Sub-Selection">
       <Tabs>
@@ -16,7 +23,12 @@ const SubSelection = () => {
         </TabList>
 
         <TabPanel>
-          <PlayerSelection />
+          <PlayerSelection 
+            playerNames={playerNames}
+            addPlayer={addPlayer} 
+            removePlayer={removePlayer}
+            addPlayerNameToTeam={addPlayerNameToTeam}
+          />
         </TabPanel>
         <TabPanel>
           <AgentSelection />
