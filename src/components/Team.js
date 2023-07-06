@@ -27,6 +27,7 @@ const Team = ({
     lockComponent = <BsLockFill className='lock-available' onClick={()=>toggleTeamLock(isAttack)}/>
   else if(!players.includes(null) && !agents.includes(null))
     lockComponent = <BsUnlockFill className='lock-available' onClick={()=>toggleTeamLock(isAttack)}/>
+  
   return (
     <div className='Team'>
       <div>{isAttack ? 'ATTACKERS' : 'DEFENDERS'} {lockComponent} </div>

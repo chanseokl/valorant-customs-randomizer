@@ -10,8 +10,15 @@ const SubSelection = ({
   addPlayer,
   removePlayer,
   addPlayerNameToTeam,
-  removeAgent,
-  removeMap
+  
+  agentList,
+  agentsRemoved,
+  removeAgentSelection,
+
+  mapList,
+  mapsRemoved,
+  removeMapSelection,
+  addMap,
  }) => {
   return (
     <div className="Sub-Selection">
@@ -31,10 +38,19 @@ const SubSelection = ({
           />
         </TabPanel>
         <TabPanel>
-          <AgentSelection />
+          <AgentSelection 
+            agentList={agentList}
+            agentsRemoved={agentsRemoved}
+            removeAgentSelection={removeAgentSelection}
+          />
         </TabPanel>
         <TabPanel>
-          <MapSelection />
+          <MapSelection 
+            mapList={mapList}
+            mapsRemoved={mapsRemoved}
+            removeMapSelection={removeMapSelection}
+            addMap={addMap}
+          />
         </TabPanel>
       </Tabs>
     </div>

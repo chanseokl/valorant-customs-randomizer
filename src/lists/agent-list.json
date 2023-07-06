@@ -1,31 +1,6 @@
 {
-	"duelists": {
-		"jett": "#1E8CAF",
-		"phoenix": "#FD3800",
-		"neon": "#008AC1",
-		"raze": "#F14211",
-		"reyna": "#2A0045",
-		"yoru": "#001F78"
-	},
-	"controllers": {
-		"astra": "#55057C",
-		"brimstone": "#FF6700",
-		"omen": "#020009",
-		"viper": "#158B12",
-		"harbor": "#006AFF"
-	},
-	"sentinels": {
-		"chamber": "#A47B0D",
-		"cypher": "#12185A",
-		"killjoy": "#B1B503",
-		"sage": "#00A897"
-	},
-	"initiators": {
-		"breach": "#8F4E00",
-		"gekko": "#34DD55",
-		"kayo": "#0089B5",
-		"skye": "#002310",
-		"sova": "#2B9BFC",
-		"fade": "#1E1F31"
-	}
+	"duelists": ["jett", "phoenix", "neon", "raze", "reyna", "yoru"],
+	"controllers": ["astra", "brimstone", "omen", "viper", "harbor"],
+	"sentinels": ["chamber", "cypher", "deadlock", "killjoy", "sage"],
+	"initiators": ["breach", "gekko", "kayo", "skye", "sova", "fade"]
 }

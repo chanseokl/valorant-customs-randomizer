@@ -1,19 +1,19 @@
 import React, {useState} from 'react'
 import { MdCancel } from 'react-icons/md'
-import {useDraggable, useDndMonitor}  from '@dnd-kit/core'
-import {CSS} from '@dnd-kit/utilities'
+import { useDraggable, useDndMonitor }  from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
 
 const PlayerName = ({ 
   name, 
+  id,
   removePlayer,
-  addPlayerNameToTeam,
-  noX 
+  addPlayerNameToTeam
 }) => {
   const [isDragging, setIsDragging] = useState(false)
 
   const {attributes, listeners, setNodeRef, transform, setActivatorNodeRef} = 
   useDraggable({
-    id: {name},
+    id: {id},
     data: {
       type: 'playerName',
       name: name,
@@ -24,21 +24,9 @@ const PlayerName = ({
   } : undefined
 
   useDndMonitor({
-    onDragStart: (event) => {
-      console.log(event)
-      if(event.active.data.current.type === 'playerName' && 
-      event.active.data.current.name === name && 
-      !noX) {
-        console.log('what the real')
-        setIsDragging(true)
-      }},
-    onDragEnd: (event) => {
-      console.log(event)
-      if(event.active.data.current.type === 'playerName' && 
-      event.active.data.current.name === name && 
-      !noX) {
-        setIsDragging(false)
-      }},
+    onDragStart: (event) => {if(event.active.id.id === id) setIsDragging(true)},
+    onDragEnd: (event) => {if(event.active.id.id === id) setIsDragging(false)},
+    onDragCancel: (event) => {if(event.active.id.id === id) setIsDragging(false)},
   })
 
   var playerClassName = ''
@@ -57,25 +45,23 @@ const PlayerName = ({
       ref={setActivatorNodeRef} {...attributes} {...listeners}>
         {name}
       </div>
-      {noX ? null :
-      (<div>
+      <div>
         <div className='add-team-btns'>
           <button 
-          onClick={() => addPlayerNameToTeam(name, "attackers")}
+          onClick={() => addPlayerNameToTeam(name, true)}
           style={{backgroundColor:'darkred'}} 
           className='team-btn'>
             Attackers
           </button>
           <button 
-          onClick={() => addPlayerNameToTeam(name, "defenders")}
+          onClick={() => addPlayerNameToTeam(name, false)}
           style={{backgroundColor:'darkblue'}} 
           className='team-btn'>
             Defenders
           </button>
         </div>
         <MdCancel className='top-right' onClick={() => removePlayer(name)}/>
-      </div>)
-      }
+      </div>
     </div>
   )
 }

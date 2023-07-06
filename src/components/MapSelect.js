@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import RandomizeButtons from './RandomizeButtons'
 import CompositionSelect from './CompositionSelect'
-import {useDroppable} from '@dnd-kit/core';
+import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 import { BsLockFill, BsUnlockFill } from 'react-icons/bs'
+import { MdCancel } from 'react-icons/md'
 
 const MapSelect = ({ 
   mapName,
+  removeCurrentMap,
   toggleMapLock,
   mapLock,
 
@@ -16,31 +18,86 @@ const MapSelect = ({
   randomizeAgents,
   randomizeMap
  }) => {
-  const {setNodeRef} = useDroppable({
+  const [dragMapName, setDragMapName] = useState(null)
+  const {setNodeRef, isOver} = useDroppable({
     id: 'map-drop',
     data: {
       accepts: ['map'],
     }
   })
-  
-  var lockComponent = <BsUnlockFill title='Fill map to lock' className='unlock-unavailable'/>
-  if(mapLock) 
-    lockComponent = <BsLockFill className='lock-available' onClick={toggleMapLock}/>
-  else if(mapName === undefined)
-    lockComponent = <BsUnlockFill className='lock-available' onClick={toggleMapLock}/>
+
+  useDndMonitor({
+    onDragStart: (event) => {
+      if(event.active.data.current.type === 'map') 
+        setDragMapName(event.active.data.current.name)
+    },
+    onDragEnd: () => {setDragMapName(null)},
+    onDragCancel: () => {setDragMapName(null)},
+  })
+
+  //changes name and classname depending on if empty name and locked
+  var realMapName = mapName
+  var realMapClassName = ''
+  var mapOptions = ''
+  if(realMapName === null) {
+    realMapName = "map not selected"
+    realMapClassName = 'empty-slot'
+  }
+  else if(!mapLock) {
+    mapOptions = 
+      <div>
+        <BsUnlockFill className='lock-available' onClick={toggleMapLock}/>
+        <MdCancel className='lock-available' onClick={removeCurrentMap}/>
+      </div>
+    realMapClassName = 'unlocked-slot'
+  }
+  else if(mapLock) {
+    mapOptions = <BsLockFill className='lock-available' onClick={toggleMapLock}/>
+    realMapClassName = 'locked-slot'
+  }
+
+  //changes background depending on mapName, preview, and lock
+  var backgroundStyle = {}
+  var canPreview = (!mapLock && dragMapName && isOver)
+  if(mapName !== null || canPreview) {
+    var backgroundImage = require(`../assets/maps/${canPreview ? dragMapName : mapName}.webp`)
+    backgroundStyle = {
+      position: 'absolute',
+      top: '0px',
+      bottom: '0px',
+      right: '0px',
+      left: '0px',
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      opacity: canPreview ? '.6' : '1'
+    }
+  }
 
   return (
     <div ref={setNodeRef} className='Map-Select'>
-      <RandomizeButtons 
-        randomizeAll={randomizeAll}
-        randomizePlayers={randomizePlayers}
-        randomizeAgents={randomizeAgents}
-        randomizeMap={randomizeMap}
-      />
-      <h3 className='map-name'>{mapName} {lockComponent}</h3>
-      <CompositionSelect 
-        compOption={compOption}
-      />
+      <div style={backgroundStyle}/>
+
+      <div style={{position: 'relative'}}>
+        <RandomizeButtons 
+          randomizeAll={randomizeAll}
+          randomizePlayers={randomizePlayers}
+          randomizeAgents={randomizeAgents}
+          randomizeMap={randomizeMap}
+        />
+      </div>
+      
+      <div style={{position: 'relative'}} className='map-name-box'>
+        <h3 className={realMapClassName}>{canPreview ? dragMapName : realMapName}</h3>
+        <div style={{marginLeft: '2px'}}>{mapOptions}</div>
+      </div> 
+
+      <div style={{position: 'relative'}}>
+        <CompositionSelect
+          style={{position: 'relative'}} 
+          compOption={compOption}
+        />
+      </div>
     </div>
   )
 }

@@ -1,10 +1,18 @@
 import './App.css';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import MainSelection from './components/MainSelection';
 import SubSelection from './components/SubSelection';
-import {DndContext} from '@dnd-kit/core';
+import { DndContext } from '@dnd-kit/core';
 
 function App() {
+  var mapDataList = require('./lists/map-list.json').list
+  const agentDataObject = require('./lists/agent-list.json')
+  var agentsRemovedData = {}
+  //create empty array to keep track of removed agents and classes
+  for (const aClass in agentDataObject) agentsRemovedData[aClass] = []
+
+  const [dragObject, setDragObject] = useState(null)
+
   /* Main Selection */
   const [attackPlayers, setAttackPlayers] = useState([null, null, null, null, null])
   const [defensePlayers, setDefensePlayers] = useState([null, null, null, null, null])
@@ -19,7 +27,7 @@ function App() {
   const [attackAgentsLocks, setAttackAgentsLocks] = useState([false, false, false, false, false])
   const [defenseAgentsLocks, setDefenseAgentsLocks] = useState([false, false, false, false, false])
 
-  const[mapName, setMapName] = useState(undefined)
+  const[mapName, setMapName] = useState(null)
   const[mapLock, setMapLock] = useState(false);
 
   const[compOption, setCompOption] = useState("Random")
@@ -27,11 +35,11 @@ function App() {
   /* Sub Selection */
   const [playerNames, setPlayerNames] = useState([])
 
-  const [agentSelection, setAgentSelection] = useState([])
-  const [agentRemoved, setAgentRemoved] = useState([])
+  const [agentList, setAgentList] = useState(agentDataObject)
+  const [agentsRemoved, setAgentsRemoved] = useState(agentsRemovedData)
 
-  const [mapSelection, setMapSelection] = useState([])
-  const [mapRemoved, setMapRemoved] = useState([])
+  const [mapList, setMapList] = useState(mapDataList)
+  const [mapsRemoved, setMapsRemoved] = useState([])
 
   
   /*===============
@@ -52,6 +60,28 @@ function App() {
     }
     else if(!isAttack && !isPlayer) 
       setDefenseAgents(defenseAgents.map((item, i) => i === num ? null : item))
+  }
+
+  //removes the currently selected map, adds back to selection
+  const removeCurrentMap = () => {
+    if(mapName !== null) {
+      setMapList([mapName, ...mapList])
+      setMapName(null)
+    }
+  }
+  //adds map to currently selected map
+  const addMap = (mapN) => {
+    if(mapLock) alert('Map is currently locked!')
+    else {
+      var newMapList = [...mapList]
+      if(mapName !== null)
+        newMapList = [mapName, ...newMapList]
+      if(mapList.includes(mapN))
+        setMapList(newMapList.filter((mapNa) => mapNa !== mapN))
+      else if(mapsRemoved.includes(mapN))
+        setMapsRemoved(newMapList.filter((mapNa) => mapNa !== mapN))
+      setMapName(mapN)
+    }
   }
 
   /*Locks*/
@@ -121,38 +151,162 @@ function App() {
     setPlayerNames(playerNames.filter((playerN) => playerN !== playerName))
   }
   //Adds a player to the respective team(if able), then removes player from selection
-  const addPlayerNameToTeam = (playerName, team) => {
-    var curTeam = [...defensePlayers]
-    var curSetTeam = setDefensePlayers
+  const addPlayerNameToTeam = (playerName, isAttack, num = undefined) => {
+    var curTeam = isAttack ? [...attackPlayers] : [...defensePlayers]
+    var curSetTeam = isAttack ? setAttackPlayers : setDefensePlayers
+    var curTeamLock = isAttack ? attackTeamLock : defenseTeamLock
+    var curPlayersLocks = isAttack ? attackPlayersLocks : defensePlayersLocks
 
-    if(team === 'attackers') {
-      var curTeam = [...attackPlayers]
-      var curSetTeam = setAttackPlayers
+    if(curTeamLock) {
+      alert("Team is locked!")
+      return
     }
 
-    for(let i = 0; i < curTeam.length; i++) {
-      if(curTeam[i] === null) {
-        curTeam[i] = playerName;
-        curSetTeam(curTeam)
-        removePlayerSelection(playerName)
+    if(num !== undefined) {
+      if(curPlayersLocks[num]) {
+        alert("Player Slot is locked!")
         return
       }
+      if(curTeam[num] !== null)
+        setPlayerNames([curTeam[num], ...playerNames])
+      curTeam[num] = playerName
+      curSetTeam(curTeam)
+      removePlayerSelection(playerName)
     }
-    alert("No empty spots!")
+    else {
+      for(let i = 0; i < curTeam.length; i++) {
+        if(curTeam[i] === null) {
+          curTeam[i] = playerName;
+          curSetTeam(curTeam)
+          removePlayerSelection(playerName)
+          return
+        }
+      }
+      alert("No empty spots!")
+    }
+  }
+
+  //Adds agent to given slot
+  const addAgentToTeam = (agentName, isAttack, num) => {
+    var curTeam = isAttack ? [...attackAgents] : [...defenseAgents]
+    var curSetTeam = isAttack ? setAttackAgents : setDefenseAgents
+    var curTeamLock = isAttack ? attackTeamLock : defenseTeamLock
+    var curAgentsLocks = isAttack ? attackAgentsLocks : defenseAgentsLocks
+    
+    if(curTeamLock) {
+      alert("Team is locked!")
+      return
+    }
+    if(curAgentsLocks[num]) {
+      alert("Agent Slot is locked!")
+      return
+    }
+    if(curTeam.includes(agentName)) {
+      alert("Team already contains agent!")
+      return
+    }
+
+    curTeam[num] = agentName
+    curSetTeam(curTeam)
   }
 
   /*Agent Selection*/
-  const removeAgentSelection = () => {
+  const removeAgentSelection = (isRemoved, name) => {
+    //receives the class the agent belongs in
+    var agentClass = ''
+    Object.keys(agentDataObject).forEach((curAgentClass) => {
+      if(agentDataObject[curAgentClass].includes(name))
+        agentClass = curAgentClass
+    })
+
+    var clonedFull = JSON.parse(JSON.stringify(agentList))
+    var clonedRemoved = JSON.parse(JSON.stringify(agentsRemoved))
+
+    if(isRemoved) {
+      clonedRemoved[agentClass] = clonedRemoved[agentClass].filter((agentN) => agentN !== name)
+      setAgentsRemoved(clonedRemoved)
+      clonedFull[agentClass] = [name, ...clonedFull[agentClass]]
+      setAgentList(clonedFull)
+    }
+    else {
+      clonedFull[agentClass] = clonedFull[agentClass].filter((agentN) => agentN !== name)
+      setAgentList(clonedFull)
+      clonedRemoved[agentClass] = [name, ...clonedRemoved[agentClass]]
+      setAgentsRemoved(clonedRemoved)
+    }
   }
 
   /*Map Selection*/
-  const removeMapSelection = () => {
+  const removeMapSelection = (isRemoved, name) => {
+    if(isRemoved) {
+      setMapsRemoved(mapsRemoved.filter((mapN) => mapN !== name))
+      setMapList([name, ...mapList])
+    }
+    else {
+      setMapList(mapList.filter((mapN) => mapN !== name))
+      setMapsRemoved([name, ...mapsRemoved])
+    }
+  }
+
+  //currently, all this does is get the drag object as a state
+  const handleDragStart = (event) => {
+    setDragObject(event.active)
+  }
+  //unsure if this will be used for anything
+  const handleDragOver = (event) => {
+  }
+  //Meat of the program, when drag ends, changes states depending on drag state object, and over
+  const handleDragEnd = (event) => {
+    const {over} = event
+    
+    //checks if droppable accepts the drag type
+    if(over && over.data.current.accepts.includes(dragObject.data.current.type)) {
+      //drag type is map
+      //Possible actions are to drop into map select, selection, or removed
+      if(dragObject.data.current.type === 'map') {
+        if(over.id === 'map-drop')
+          addMap(dragObject.data.current.name)
+        else if(!dragObject.data.current.isRemoved && over.id === 'removed-map')
+          removeMapSelection(false, dragObject.data.current.name)
+        else if(dragObject.data.current.isRemoved && over.id === 'map-selection')
+          removeMapSelection(true, dragObject.data.current.name)
+      }
+      //drag type is agent
+      //Possible actions are to drop into player slot, agent selection, agent removed
+      else if(dragObject.data.current.type === 'agent') {
+        if(dragObject.data.current.isRemoved && over.id === 'agent-selection') {
+          removeAgentSelection(true, dragObject.data.current.name)
+        }
+        else if(!dragObject.data.current.isRemoved && over.id === 'removed-agent'){
+          removeAgentSelection(false, dragObject.data.current.name)
+        }
+        //if nothing else, has to be over player slot
+        else {
+          addAgentToTeam(dragObject.data.current.name, over.data.current.isAttack, over.data.current.num)
+        }
+      }
+      //drag type is player name
+      //Possible actions are just to drop into player slot
+      else if(dragObject.data.current.type === 'playerName') {
+        addPlayerNameToTeam(dragObject.data.current.name, over.data.current.isAttack, over.data.current.num)
+      }
+    }
+    setDragObject(null)
+  }
+
+  const handleDragCancel = (event) => {
+    setDragObject(null)
   }
 
   return (
     <div 
     className='App'>
-      <DndContext>
+      <DndContext 
+        onDragStart={handleDragStart} 
+        onDragOver={handleDragOver} 
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+      >
         <MainSelection 
           removeChoice={removeChoice}
           attackPlayers={attackPlayers}
@@ -170,6 +324,7 @@ function App() {
           defenseAgentsLocks={defenseAgentsLocks}
 
           mapName={mapName}
+          removeCurrentMap={removeCurrentMap}
           toggleMapLock={toggleMapLock}
           mapLock={mapLock}
 
@@ -188,8 +343,14 @@ function App() {
           removePlayer={removePlayerSelection}
           addPlayerNameToTeam={addPlayerNameToTeam}
 
-          removeAgent={removeAgentSelection}
-          removeMap={removeMapSelection}
+          agentList={agentList}
+          agentsRemoved={agentsRemoved}
+          removeAgentSelection={removeAgentSelection}
+
+          mapList={mapList}
+          mapsRemoved={mapsRemoved}
+          removeMapSelection={removeMapSelection}
+          addMap={addMap}
         />
       </DndContext>
     </div>

@@ -19,6 +19,7 @@ const MainSelection = ({
   defenseAgentsLocks,
 
   mapName,
+  removeCurrentMap,
   toggleMapLock,
   mapLock,
 
@@ -45,6 +46,7 @@ const MainSelection = ({
 
       <MapSelect 
         mapName={mapName}
+        removeCurrentMap={removeCurrentMap}
         toggleMapLock={toggleMapLock}
         mapLock={mapLock}
         compOption={compOption}

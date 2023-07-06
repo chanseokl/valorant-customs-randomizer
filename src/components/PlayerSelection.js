@@ -8,18 +8,27 @@ const PlayerSelection = ({
   removePlayer, 
   addPlayerNameToTeam,
 }) => {
-  const [activeId, setActiveId] = useState(null);
+  const [activeDrag, setActiveDrag] = useState(null);
   const [text, setText] = useState('')
 
   useDndMonitor({
-    onDragStart: (event) => {setActiveId(event.active.id);},
-    onDragEnd: (event) => {setActiveId(null);},
+    onDragStart: (event) => {
+      if(event.active.data.current.type === 'playerName')
+        setActiveDrag(event.active)
+    },
+    onDragEnd: () => {setActiveDrag(null);},
+    onDragCancel: () => {setActiveDrag(null);},
   })
 
   const onSubmit = (e) => {
     e.preventDefault()
     if(!text) {
       alert('Please add a name!')
+      return
+    }
+    if(text.length > 16) {
+      alert('Please type a name with 16 characters or less!')
+      setText('') //necessary?
       return
     }
     addPlayer(text)
@@ -32,7 +41,8 @@ const PlayerSelection = ({
         {playerNames.map((playerName) => 
           <PlayerName 
             name={playerName}
-            key={playerName}
+            key={'player_name:' + playerName}
+            id={'player_name:' + playerName}
             removePlayer={removePlayer}
             addPlayerNameToTeam={addPlayerNameToTeam}
           />
@@ -40,8 +50,8 @@ const PlayerSelection = ({
       </div>
 
       <DragOverlay>
-        {activeId ? (
-          <PlayerName name={activeId.name} noX={true} key={activeId.name}/>
+        {activeDrag ? (
+          <div className='Player-Name player-name-text'>{activeDrag.data.current.name}</div>
         ) : null}
       </DragOverlay>
 

@@ -1,3 +1,4 @@
 {
-  "list": ["bind", "haven", "split", "ascent", "icebox", "breeze", "fracture", "pearl", "lotus"]
+  "list": ["bind", "haven", "split", "ascent", "icebox", "breeze", "fracture", "pearl", "lotus"],
+  "tdm" : ["district", "kasbah", "piazza"]
 }

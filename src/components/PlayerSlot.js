@@ -1,5 +1,5 @@
-import React from 'react'
-import { useDroppable } from '@dnd-kit/core'
+import React, { useState } from 'react'
+import { useDroppable, useDndMonitor } from '@dnd-kit/core'
 import { BsLockFill, BsUnlockFill } from 'react-icons/bs'
 import { FaRandom } from 'react-icons/fa'
 import { MdCancel } from 'react-icons/md'
@@ -16,19 +16,29 @@ const PlayerSlot = ({
   playerLock,
   agentLock,
 }) => {
-  const {setNodeRef} = useDroppable({
-    id: {id},
+  const [dragData, setDragData] = useState(null)
+  const accepted = ['agent', 'playerName']
+  const {setNodeRef, isOver} = useDroppable({
+    id: id,
     data: {
-      accepts: ['agent', 'playerName'],
+      accepts: accepted,
+      num: num,
+      isAttack: isAttack
     },
+  })
+
+  useDndMonitor({
+    onDragStart: (event) => {
+      if(accepted.includes(event.active.data.current.type)) 
+        setDragData(event.active.data.current)
+    },
+    onDragEnd: () => {setDragData(null)},
+    onDragCancel: () => {setDragData(null)},
   })
   
   var realPlayerName = playerName
   var playerClassName = ''
-  var realAgentName = agentName
-  var agentClassName = ''
   var playerOptions = null
-  var agentOptions = null;
 
   //if the overall team is locked, all players slots are locked, can't unlock unless team is
   if(teamLock) {
@@ -69,7 +79,11 @@ const PlayerSlot = ({
           onClick={() => toggleChoiceLock(isAttack, num, true)}
         />
     }
-  
+
+    var realAgentName = agentName
+    var agentClassName = ''
+    var agentOptions = null
+    //same lock logic as above
     if(agentName === null) {
       realAgentName = 'empty'
       agentClassName = 'empty-slot'
@@ -93,7 +107,7 @@ const PlayerSlot = ({
     }
     else if(agentLock) {
       agentClassName = 'locked-slot'
-      agentOptions = 
+      agentOptions =
         <BsLockFill 
           className='lock-available' 
           onClick={() => toggleChoiceLock(isAttack, num, false)}
@@ -101,11 +115,27 @@ const PlayerSlot = ({
     }
   }
 
+  var canPreviewName = !playerLock && dragData && dragData.type === 'playerName' && isOver
+  var canPreviewAgent = !playerLock && dragData && dragData.type === 'agent' && isOver
+  var agentImageClass = ''
+  if(canPreviewName) {
+    realPlayerName = dragData.name
+    playerClassName += ' half-visible'
+  }
+  if(canPreviewAgent) {
+    realAgentName = dragData.name
+    agentClassName += ' half-visible'
+    agentImageClass = 'half-visible'
+  }
+
   return (
     <div ref={setNodeRef}
       className='Player-Slot'
       style={{backgroundColor: isAttack ? '#be2f2d' : '#313073'}}>
-        <img alt={playerName} src={require(`../assets/agents/${realAgentName.toLowerCase()}-icon.png`)}/>
+        <img 
+          className={agentImageClass} 
+          alt={playerName} 
+          src={require(`../assets/agents/${realAgentName.toLowerCase()}-icon.png`)}/>
         <div className='player-slot__info'>
           <div>
             <label className={playerClassName}>{realPlayerName}</label>

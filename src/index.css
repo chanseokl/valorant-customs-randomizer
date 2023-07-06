@@ -70,7 +70,9 @@ body {
 .player-slot__info {
   display: flex;
   flex-direction: column;
-  margin: auto;
+  justify-content: space-around;
+  margin-left: auto;
+  margin-right: auto;
   font-size: 12px;
 }
 
@@ -78,14 +80,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
   width: 500px;
   margin: 5px auto;
   background-color: #375d7b;
 }
 
-.map-name {
+.map-name-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   padding: 4px;
-  background-color: black;
+  background-color: darkslategray;
   margin: 10px;
   border: 1px solid rgb(148, 147, 147);
 }
@@ -177,11 +183,19 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
+  align-content: flex-start;
+  overflow: auto;
   width: 68%;
   height: 250px;
   padding: 5px;
   background-color: #375d7b;
   border: 1px solid steelblue;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.player-names::-webkit-scrollbar {
+  display:none;
 }
 
 .Player-Name {
@@ -212,6 +226,7 @@ body {
 .team-btn {
   color: white;
   cursor: pointer;
+  padding: 1px;
 }
 
 .player-input {
@@ -260,12 +275,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 68%;
+  width: 63%;
   height: 250px;
   padding: 5px;
   border: 1px solid steelblue;
   background-color: #375d7b;
   overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.agent-collection::-webkit-scrollbar {
+  display:none;
 }
 
 .agent-category {
@@ -278,14 +299,47 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
+  justify-content: space-around;
   padding: 2px;
   margin: 2px;
+}
+
+
+.Agent {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  color: white;
+  margin: 5px;
+  height: 70px;
+  cursor: grab;
+  user-select: none;
+  border-radius: 5px;
+}
+
+.agent-outline {
+  outline: 3px solid black;
+}
+
+.agent-image {
+  width: 60px;
 }
 
 .remove{
   display: flex;
   flex-direction: column;
-  width: 31%;
+  width: 36%;
+  height: 250px;
+  border: 1px solid steelblue;
+  background-color:darkred;
+}
+
+.remove-map{
+  display: flex;
+  flex-direction: column;
+  width: 34%;
   height: 250px;
   border: 1px solid steelblue;
   background-color:darkred;
@@ -295,26 +349,16 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  margin: 1px;
+  justify-content: flex-start;
+  gap: 15px;
+  padding: 10px;
   overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.Agent {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  color: white;
-  height: 70px;
-  padding: 1px;
-  margin: 5px;
-  cursor: grab;
-  border-radius: 5px;
-}
-
-.agent-image {
-  width: 60px;
+.removed::-webkit-scrollbar {
+  display:none;
 }
 
 .Map-Selection {
@@ -327,7 +371,9 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  width: 68%;
+  justify-content: flex-start;
+  gap: 15px;
+  width: 65%;
   height: 250px;
   padding: 5px;
   border: 1px solid steelblue;
@@ -336,27 +382,29 @@ body {
 
 .Map {
   display: flex;
-  flex-direction: row;
   position: relative;
   color: white;
+  user-select: none;
   height: 70px;
-  margin: 5px;
   cursor: grab;
-  border-radius: 5px;
+  border-radius: 3px;
+  outline: 3px solid black;
+}
+
+.Map-margin {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.Map-relative {
+  display: flex;
+  position: relative;
 }
 
 .centered {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.top-right-agent {
-  position: absolute;
-  top: 10%;
-  left: 85%;
-  cursor: pointer;
   transform: translate(-50%, -50%);
 }
 
@@ -374,6 +422,10 @@ body {
 
 .invisible {
   opacity: 0;
+}
+
+.half-visible {
+  opacity: .5;
 }
 
 .empty-slot {
