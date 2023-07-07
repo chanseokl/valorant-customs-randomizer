@@ -116,7 +116,7 @@ const PlayerSlot = ({
   }
 
   var canPreviewName = !playerLock && dragData && dragData.type === 'playerName' && isOver
-  var canPreviewAgent = !playerLock && dragData && dragData.type === 'agent' && isOver
+  var canPreviewAgent = !agentLock && dragData && dragData.type === 'agent' && isOver
   var agentImageClass = ''
   if(canPreviewName) {
     realPlayerName = dragData.name
@@ -135,7 +135,7 @@ const PlayerSlot = ({
         <img 
           className={agentImageClass} 
           alt={playerName} 
-          src={require(`../assets/agents/${realAgentName.toLowerCase()}-icon.png`)}/>
+          src={require(`../assets/agents/${realAgentName.toLowerCase()}-icon.png`)}/>   
         <div className='player-slot__info'>
           <div>
             <label className={playerClassName}>{realPlayerName}</label>

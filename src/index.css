@@ -71,6 +71,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  margin-top: 3px;
   margin-left: auto;
   margin-right: auto;
   font-size: 12px;

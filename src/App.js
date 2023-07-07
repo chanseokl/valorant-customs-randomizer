@@ -107,13 +107,38 @@ function App() {
   }
 
   /* Buttons */
+
+  const getRandomInt = (max) => {
+    return Math.floor(Math.random() * max);
+  }
+
   //Randomizes everything that is not locked
   const randomizeAll = () => {
-
+    
   }
   //Randomizes players that are not locked
   const randomizePlayers = () => {
+    //gets all available players to be randomized
+    var available = playerNames.concat(
+      attackPlayers.filter((x, i) => (x!= null && !attackPlayersLocks[i])).concat(
+      defensePlayers.filter((x, i) => (x!= null && !defensePlayersLocks[i]))))
+    if(available.length < 10) {
+      alert("Not enough players!")
+      return
+    }
+    //gets random player from available, removes player, and returns
+    const getAndRemovePlayer = () => {
+      let res = available[getRandomInt(available.length)]
+      available = available.filter(x => x !== res)
+      return res
+    }
 
+    var attackPs = attackPlayers.map((ap, i) => (!attackPlayersLocks[i] || ap === null) ? getAndRemovePlayer() : ap)
+    var defensePs = defensePlayers.map((dp, i) => (!defensePlayersLocks[i] || dp === null) ? getAndRemovePlayer() : dp)
+
+    setAttackPlayers(attackPs)
+    setDefensePlayers(defensePs)
+    setPlayerNames(available)
   }
   //Randomizes agents that are not locked
   const randomizeAgents = () => {
@@ -121,6 +146,11 @@ function App() {
   }
   //Randomizes the map if not locked
   const randomizeMap = () => {
+    if(mapLock) {
+      alert("Map is locked!")
+      return
+    }
+    addMap(mapList[getRandomInt(mapList.length)])
   }
 
   /* Team Composition */
