@@ -12,6 +12,7 @@ const MapSelect = ({
   mapLock,
 
   compOption,
+  changeComp,
 
   randomizeAll,
   randomizePlayers,
@@ -96,6 +97,7 @@ const MapSelect = ({
         <CompositionSelect
           style={{position: 'relative'}} 
           compOption={compOption}
+          changeComp={changeComp}
         />
       </div>
     </div>

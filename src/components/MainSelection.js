@@ -24,6 +24,7 @@ const MainSelection = ({
   mapLock,
 
   compOption,
+  changeComp,
 
   randomizeAll,
   randomizePlayers,
@@ -50,6 +51,7 @@ const MainSelection = ({
         toggleMapLock={toggleMapLock}
         mapLock={mapLock}
         compOption={compOption}
+        changeComp={changeComp}
         randomizeAll={randomizeAll}
         randomizePlayers={randomizePlayers}
         randomizeAgents={randomizeAgents}

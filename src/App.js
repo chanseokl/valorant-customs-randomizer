@@ -8,8 +8,12 @@ function App() {
   var mapDataList = require('./lists/map-list.json').list
   const agentDataObject = require('./lists/agent-list.json')
   var agentsRemovedData = {}
+  var agentClassDict = {}
   //create empty array to keep track of removed agents and classes
-  for (const aClass in agentDataObject) agentsRemovedData[aClass] = []
+  for (const aClass in agentDataObject) {
+    agentsRemovedData[aClass] = []
+    agentDataObject[aClass].forEach((aName) => agentClassDict[aName] = aClass)
+  }
 
   const [dragObject, setDragObject] = useState(null)
 
@@ -30,7 +34,7 @@ function App() {
   const[mapName, setMapName] = useState(null)
   const[mapLock, setMapLock] = useState(false);
 
-  const[compOption, setCompOption] = useState("Random")
+  const[compOption, setCompOption] = useState("random")
 
   /* Sub Selection */
   const [playerNames, setPlayerNames] = useState([])
@@ -114,16 +118,21 @@ function App() {
 
   //Randomizes everything that is not locked
   const randomizeAll = () => {
-    
+    randomizePlayers()
+    randomizeAgents()
+    randomizeMap()
   }
   //Randomizes players that are not locked
+    //TODO what if less than 10 players? allow for 4v4, 4v3, etc
+    //How to play around which team gets which numbers, locked players, etc
+    //what if teamlock, that entire team is locked
   const randomizePlayers = () => {
     //gets all available players to be randomized
     var available = playerNames.concat(
-      attackPlayers.filter((x, i) => (x!= null && !attackPlayersLocks[i])).concat(
-      defensePlayers.filter((x, i) => (x!= null && !defensePlayersLocks[i]))))
-    if(available.length < 10) {
-      alert("Not enough players!")
+      attackPlayers.filter((x, i) => (!attackTeamLock && x!= null && !attackPlayersLocks[i])).concat(
+      defensePlayers.filter((x, i) => (!defenseTeamLock && x!= null && !defensePlayersLocks[i]))))
+    if(available.length === 0) {
+      alert("There are no players!")
       return
     }
     //gets random player from available, removes player, and returns
@@ -133,16 +142,125 @@ function App() {
       return res
     }
 
-    var attackPs = attackPlayers.map((ap, i) => (!attackPlayersLocks[i] || ap === null) ? getAndRemovePlayer() : ap)
-    var defensePs = defensePlayers.map((dp, i) => (!defensePlayersLocks[i] || dp === null) ? getAndRemovePlayer() : dp)
+    var attackPlayerTotal = 0
+    var defensePlayerTotal = 0
+    var attackPClone = [...attackPlayers]
+    var defensePClone = [...defensePlayers]
 
-    setAttackPlayers(attackPs)
-    setDefensePlayers(defensePs)
+    for(let i = 0; i < 5; i++) {
+      if(attackTeamLock) attackPlayerTotal++
+      else {
+        if(attackPlayersLocks[i]) attackPlayerTotal++
+        else attackPClone[i] = null
+      }
+
+      if(defenseTeamLock) defensePlayerTotal++
+      else {
+        if(defensePlayersLocks[i]) defensePlayerTotal++
+        else defensePClone[i] = null
+      }
+    }
+
+    while(available.length > 0 && (attackPlayerTotal + defensePlayerTotal < 10)) {
+      var isAttack = attackPlayerTotal === defensePlayerTotal ? 
+        (getRandomInt(2) === 0) : (attackPlayerTotal < defensePlayerTotal)
+      var curSide = isAttack ? attackPClone : defensePClone
+      if(isAttack) attackPlayerTotal++
+      else defensePlayerTotal++
+      const addIndex = curSide.indexOf(null)
+      curSide[addIndex] = getAndRemovePlayer()
+    }
+
+    setAttackPlayers(attackPClone)
+    setDefensePlayers(defensePClone)
     setPlayerNames(available)
   }
   //Randomizes agents that are not locked
   const randomizeAgents = () => {
+    var compAttackArray = []
+    var compDefenseArray = []
+    //Composition is completely random
+    if(compOption === 'random') {
+      compAttackArray = ['r', 'r', 'r', 'r', 'r']
+      compDefenseArray = ['r', 'r', 'r', 'r', 'r']
+    }
+    //Completely random, except at least one smoke on each team
+    else if(compOption === 'oneSmoke') {
+      compAttackArray = ['controllers', 'r', 'r', 'r', 'r']
+      compDefenseArray = ['controllers', 'r', 'r', 'r', 'r']
+    }
+    //1 of each role, except for 2 duelists
+    else if(compOption === 'balanced') {
+      compAttackArray = ['controllers', 'sentinels', 'initiators', 'duelists', 'duelists']
+      compDefenseArray = ['controllers', 'sentinels', 'initiators', 'duelists', 'duelists']
+    }
+    //Allows user to pick what roles to pick for each thing
+    else if(compOption === 'custom') {
 
+    }
+    else if(compOption === 'tdm') {} //Not sure how this is relevant, think about later
+    else if(compOption === 'best') {} //TBD, look up map comps and see what is good
+
+    //Object that shows which agents are available in which class
+    var attackAvailable = JSON.parse(JSON.stringify(agentList))
+    var defenseAvailable = JSON.parse(JSON.stringify(agentList))
+    var attackAClone = [...attackAgents]
+    var defenseAClone = [...defenseAgents]
+    const ranAgents = (teamLock, compArray, agentsLocks, available, aClone) => {
+      //goes through team and sees who is locked, to get rid of that from what is available
+      for(let i = 0; i < 5; i++) {
+        if(!teamLock && agentsLocks[i]) {
+          const curAgentClass = agentClassDict[aClone[i]]
+          const classIndex = compArray.indexOf(curAgentClass) 
+          if(classIndex === -1) {
+            const rIndex = compArray.indexOf('r') 
+            if(rIndex !== -1) compArray = compArray.filter((c, i) => i !== rIndex)
+          }
+          else compArray = compArray.filter((c, i) => i !== classIndex)
+          available[curAgentClass] = 
+            available[curAgentClass].filter((aName) => aName !== aClone[i])
+        }
+      }
+      //Counts total number of agents to be able to grab random one
+      var totalAgents = Object.keys(available).reduce((a, c) => a + available[c].length, 0)
+
+      //Loop through team again to place random agents
+      for(let i = 0; i < 5; i++) {
+        if(!teamLock && !agentsLocks[i]) {
+          //Grabs and removes random class from compArray
+          const ranClassIndex = getRandomInt(compArray.length)
+          var ranClass = compArray[ranClassIndex]
+          compArray = compArray.filter((c, i) => i !== ranClassIndex)
+          //If no more available agents from class, changes to random agent
+          if(available[ranClass] === 0) ranClass = 'r'
+          //If random, chooses random agent from all of the list
+          if(ranClass === 'r') {
+            var ranTotalIndex = getRandomInt(totalAgents)
+            //Looping through each class to find which index it lands on
+            for(const key of Object.keys(available)) {
+              if(ranTotalIndex >= available[key].length) ranTotalIndex -= available[key].length
+              else {
+                aClone[i] = available[key][ranTotalIndex]
+                available[key] = available[key].filter((c, j) => j !== ranTotalIndex)
+                break;
+              }
+            }
+          }
+          //Else, grabs random agent from the available agents from that class
+          else {
+            const ranAgentIndex = getRandomInt(available[ranClass].length)
+            aClone[i] = available[ranClass][ranAgentIndex]
+            available[ranClass] = available[ranClass].filter((c, j) => j !== ranAgentIndex)
+          }
+          totalAgents--;
+        }
+      }
+    }
+
+    ranAgents(attackTeamLock, compAttackArray, attackAgentsLocks, attackAvailable, attackAClone)
+    ranAgents(defenseTeamLock, compDefenseArray, defenseAgentsLocks, defenseAvailable, defenseAClone)
+    setAttackAgents(attackAClone)
+    setDefenseAgents(defenseAClone)
   }
   //Randomizes the map if not locked
   const randomizeMap = () => {
@@ -249,9 +367,9 @@ function App() {
         agentClass = curAgentClass
     })
 
+    //adds/removes based on if agent is added/removed
     var clonedFull = JSON.parse(JSON.stringify(agentList))
     var clonedRemoved = JSON.parse(JSON.stringify(agentsRemoved))
-
     if(isRemoved) {
       clonedRemoved[agentClass] = clonedRemoved[agentClass].filter((agentN) => agentN !== name)
       setAgentsRemoved(clonedRemoved)
@@ -359,7 +477,7 @@ function App() {
           mapLock={mapLock}
 
           compOption={compOption}
-          onCompOptionClick={onCompOptionClick}
+          changeComp={onCompOptionClick}
           
           randomizeAll={randomizeAll}
           randomizePlayers={randomizePlayers}
