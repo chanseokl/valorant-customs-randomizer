@@ -7,6 +7,7 @@
 }
 
 /*
+  border: 1px solid steelblue;
 Monochromatic color scheme with background as main color
 #090f14
 #809eb7
@@ -29,7 +30,6 @@ body {
   width: 1000px;
   height: 900px;
   margin: 5px auto;
-  border: 1px solid steelblue;
 }
 
 .Main-Selection {
@@ -45,7 +45,6 @@ body {
   flex-direction: column;
   align-items: center;
   width: 210px;
-  border: 1px solid steelblue;
   margin: 10px auto;
 }
 
@@ -55,6 +54,7 @@ body {
   align-items: center;
   width: 100%;
   height: 100%;
+  border-radius: 2px;
 }
 
 .Player-Slot {
@@ -99,7 +99,6 @@ body {
 
 .Randomize-Buttons {
   max-width: 500px;
-  border: 1px solid steelblue;
   padding: 3px;
   border-radius: 5px;
   display: flex;
@@ -157,7 +156,6 @@ body {
   flex-direction: column;
   align-items: center;
   background-color: #3c4348;
-  border: 1px solid steelblue;
   padding: 20px;
   border-radius: 5px;
 }
@@ -168,7 +166,6 @@ body {
   height: 350px;
   margin: 5px auto;
   overflow: auto;
-  border: 1px solid steelblue;
   padding: 20px;
   border-radius: 5px;
 }
@@ -190,7 +187,6 @@ body {
   height: 250px;
   padding: 5px;
   background-color: #375d7b;
-  border: 1px solid steelblue;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -204,7 +200,6 @@ body {
   flex-direction: row;
   align-items: center;
   position: relative;
-  border: 1px solid steelblue;
   background-color: #425666;
   margin: 5px;
   font-size: 15px;
@@ -233,7 +228,7 @@ body {
 .player-input {
   display: flex;
   flex-direction: column;
-  height: 100px;
+  height: 135px;
   width: 30%;
   border: 1px solid steelblue;
 }
@@ -279,7 +274,6 @@ body {
   width: 63%;
   height: 250px;
   padding: 5px;
-  border: 1px solid steelblue;
   background-color: #375d7b;
   overflow: auto;
   scrollbar-width: none;
@@ -333,7 +327,6 @@ body {
   flex-direction: column;
   width: 36%;
   height: 250px;
-  border: 1px solid steelblue;
   background-color:darkred;
 }
 
@@ -342,7 +335,6 @@ body {
   flex-direction: column;
   width: 34%;
   height: 250px;
-  border: 1px solid steelblue;
   background-color:darkred;
 }
 
@@ -377,7 +369,6 @@ body {
   width: 65%;
   height: 250px;
   padding: 5px;
-  border: 1px solid steelblue;
   background-color: #375d7b;
 }
 
@@ -454,7 +445,9 @@ body {
   margin: 2px;
 }
 
-
+.separate-text {
+  font-size: 12px;
+}
 
 
 .container {
@@ -462,7 +455,6 @@ body {
   margin: 30px auto;
   overflow: auto;
   min-height: 200px;
-  border: 1px solid steelblue;
   padding: 20px;
   border-radius: 5px;
 }

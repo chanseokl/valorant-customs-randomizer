@@ -37,12 +37,16 @@ const PlayerSlot = ({
   })
   
   var realPlayerName = playerName
+  var realAgentName = agentName
   var playerClassName = ''
+  var agentClassName = ''
   var playerOptions = null
+  var agentOptions = null
 
   //if the overall team is locked, all players slots are locked, can't unlock unless team is
   if(teamLock) {
     playerClassName = 'locked-slot'
+    agentClassName = 'locked-slot'
     playerOptions = <BsLockFill title='Team is Locked' className='unlock-unavailable'/>
     agentOptions = <BsLockFill title='Team is Locked' className='unlock-unavailable'/>
   }
@@ -80,9 +84,6 @@ const PlayerSlot = ({
         />
     }
 
-    var realAgentName = agentName
-    var agentClassName = ''
-    var agentOptions = null
     //same lock logic as above
     if(agentName === null) {
       realAgentName = 'empty'

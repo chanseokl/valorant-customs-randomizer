@@ -7,23 +7,29 @@ import { DndContext } from '@dnd-kit/core';
 function App() {
   var mapDataList = require('./lists/map-list.json').list
   const agentDataObject = require('./lists/agent-list.json')
+
   var agentsRemovedData = {}
   var agentClassDict = {}
-  //create empty array to keep track of removed agents and classes
+  //Create empty array to keep track of removed agents and classes
+  //Also creates dictionary to map each agent to their class
   for (const aClass in agentDataObject) {
     agentsRemovedData[aClass] = []
     agentDataObject[aClass].forEach((aName) => agentClassDict[aName] = aClass)
   }
 
+  //State used to track the currently dragging object
   const [dragObject, setDragObject] = useState(null)
 
   /* Main Selection */
+  //Keeps track of the players in each team
   const [attackPlayers, setAttackPlayers] = useState([null, null, null, null, null])
   const [defensePlayers, setDefensePlayers] = useState([null, null, null, null, null])
 
+  //Keeps track of the agents in each team
   const [attackAgents, setAttackAgents] = useState([null, null, null, null, null])
   const [defenseAgents, setDefenseAgents] = useState([null, null, null, null, null])
 
+  //Keeps track of the locks that can be on or off
   const [attackTeamLock, setAttackTeamLock] = useState(false)
   const [defenseTeamLock, setDefenseTeamLock] = useState(false)
   const [attackPlayersLocks, setAttackPlayersLocks] = useState([false, false, false, false, false])
@@ -31,17 +37,22 @@ function App() {
   const [attackAgentsLocks, setAttackAgentsLocks] = useState([false, false, false, false, false])
   const [defenseAgentsLocks, setDefenseAgentsLocks] = useState([false, false, false, false, false])
 
+  //Keeps track of map information
   const[mapName, setMapName] = useState(null)
   const[mapLock, setMapLock] = useState(false);
 
+  //Keeps track of currently selected composition
   const[compOption, setCompOption] = useState("random")
 
   /* Sub Selection */
+  //List of all player names added by user
   const [playerNames, setPlayerNames] = useState([])
 
+  //List of all agents separated by classes, also ones removed by user
   const [agentList, setAgentList] = useState(agentDataObject)
   const [agentsRemoved, setAgentsRemoved] = useState(agentsRemovedData)
 
+  //List of all maps, also ones removed by user
   const [mapList, setMapList] = useState(mapDataList)
   const [mapsRemoved, setMapsRemoved] = useState([])
 
@@ -50,7 +61,7 @@ function App() {
    Main Selection
   ===============*/
 
-  //Removes either player or agent from player slot, if player adds back to selection
+  //Removes either player or agent from player slot. If player, adds back to selection
   const removeChoice = (isAttack, num, isPlayer) => {
     if(isAttack && isPlayer) {
       setPlayerNames([...playerNames, attackPlayers[num]])
@@ -123,9 +134,6 @@ function App() {
     randomizeMap()
   }
   //Randomizes players that are not locked
-    //TODO what if less than 10 players? allow for 4v4, 4v3, etc
-    //How to play around which team gets which numbers, locked players, etc
-    //what if teamlock, that entire team is locked
   const randomizePlayers = () => {
     //gets all available players to be randomized
     var available = playerNames.concat(
@@ -182,17 +190,17 @@ function App() {
     //Composition is completely random
     if(compOption === 'random') {
       compAttackArray = ['r', 'r', 'r', 'r', 'r']
-      compDefenseArray = ['r', 'r', 'r', 'r', 'r']
+      compDefenseArray = [...compAttackArray]
     }
     //Completely random, except at least one smoke on each team
     else if(compOption === 'oneSmoke') {
       compAttackArray = ['controllers', 'r', 'r', 'r', 'r']
-      compDefenseArray = ['controllers', 'r', 'r', 'r', 'r']
+      compDefenseArray = [...compAttackArray]
     }
-    //1 of each role, except for 2 duelists
+    //1 of each role + 1 random class
     else if(compOption === 'balanced') {
-      compAttackArray = ['controllers', 'sentinels', 'initiators', 'duelists', 'duelists']
-      compDefenseArray = ['controllers', 'sentinels', 'initiators', 'duelists', 'duelists']
+      compAttackArray = ['controllers', 'sentinels', 'initiators', 'duelists', 'r']
+      compDefenseArray = [...compAttackArray]
     }
     //Allows user to pick what roles to pick for each thing
     else if(compOption === 'custom') {
@@ -206,10 +214,12 @@ function App() {
     var defenseAvailable = JSON.parse(JSON.stringify(agentList))
     var attackAClone = [...attackAgents]
     var defenseAClone = [...defenseAgents]
-    const ranAgents = (teamLock, compArray, agentsLocks, available, aClone) => {
+    const ranAgents = (teamLock, compArray, agentsLocks, available, aClone, sideName) => {
+      var numLocked = 0
       //goes through team and sees who is locked, to get rid of that from what is available
       for(let i = 0; i < 5; i++) {
         if(!teamLock && agentsLocks[i]) {
+          numLocked++
           const curAgentClass = agentClassDict[aClone[i]]
           const classIndex = compArray.indexOf(curAgentClass) 
           if(classIndex === -1) {
@@ -223,6 +233,11 @@ function App() {
       }
       //Counts total number of agents to be able to grab random one
       var totalAgents = Object.keys(available).reduce((a, c) => a + available[c].length, 0)
+
+      if(totalAgents + numLocked < 5) {
+        alert('Not enough agents available for ' + sideName + ' side!')
+        return
+      }
 
       //Loop through team again to place random agents
       for(let i = 0; i < 5; i++) {
@@ -240,8 +255,10 @@ function App() {
             for(const key of Object.keys(available)) {
               if(ranTotalIndex >= available[key].length) ranTotalIndex -= available[key].length
               else {
-                aClone[i] = available[key][ranTotalIndex]
-                available[key] = available[key].filter((c, j) => j !== ranTotalIndex)
+                //Weird code to avoid warning with ranTotalIndex being outside local scope
+                const curIndex = ranTotalIndex
+                aClone[i] = available[key][curIndex]
+                available[key] = available[key].filter((c, j) => j !== curIndex)
                 break;
               }
             }
@@ -257,8 +274,8 @@ function App() {
       }
     }
 
-    ranAgents(attackTeamLock, compAttackArray, attackAgentsLocks, attackAvailable, attackAClone)
-    ranAgents(defenseTeamLock, compDefenseArray, defenseAgentsLocks, defenseAvailable, defenseAClone)
+    ranAgents(attackTeamLock, compAttackArray, attackAgentsLocks, attackAvailable, attackAClone, 'Attack')
+    ranAgents(defenseTeamLock, compDefenseArray, defenseAgentsLocks, defenseAvailable, defenseAClone, 'Defense')
     setAttackAgents(attackAClone)
     setDefenseAgents(defenseAClone)
   }
@@ -266,6 +283,10 @@ function App() {
   const randomizeMap = () => {
     if(mapLock) {
       alert("Map is locked!")
+      return
+    }
+    if(mapList.length === 0) {
+      alert('No maps left!')
       return
     }
     addMap(mapList[getRandomInt(mapList.length)])
@@ -285,14 +306,26 @@ function App() {
   /*Player Selection*/
   //Adds new player to the Player Selection
   const addPlayerSelection = (playerName) => {
-    if(!attackPlayers.includes(playerName) &&
-      !defensePlayers.includes(playerName) &&
-      !playerNames.includes(playerName)) {
-        setPlayerNames([...playerNames, playerName])
+    var toAdd = [...playerNames]
+    var splitted = playerName.split(',')
+    var dupeAlert = false
+
+    for(const each of splitted) {
+      var trimmed = each.trim()
+      if(toAdd.length > 25){
+        alert('Too many names!')
+        break
+      }
+      else if(!attackPlayers.includes(trimmed) &&
+        !defensePlayers.includes(trimmed) &&
+        !toAdd.includes(trimmed)) 
+          toAdd = [...toAdd, trimmed]
+      else dupeAlert = true
     }
-    else {
-      alert('No duplicate names!')
-    }
+
+    if(dupeAlert) alert('No duplicate names!')
+
+    setPlayerNames(toAdd)
   }
   //Removes a player from the player Selection
   const removePlayerSelection = (playerName) => {
@@ -315,11 +348,12 @@ function App() {
         alert("Player Slot is locked!")
         return
       }
-      if(curTeam[num] !== null)
-        setPlayerNames([curTeam[num], ...playerNames])
+      //Weird setup with this bc doesn't set playerNames correctly when calling function and setting
+      var toSetNames = [...playerNames]
+      if(curTeam[num] !== null) toSetNames = [curTeam[num], ...toSetNames]
       curTeam[num] = playerName
       curSetTeam(curTeam)
-      removePlayerSelection(playerName)
+      setPlayerNames(toSetNames.filter((playerN) => playerN !== playerName))
     }
     else {
       for(let i = 0; i < curTeam.length; i++) {

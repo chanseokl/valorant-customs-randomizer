@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useRef } from 'react'
 import PlayerName from './PlayerName'
 import {DragOverlay, useDndMonitor} from '@dnd-kit/core';
 
@@ -10,6 +10,7 @@ const PlayerSelection = ({
 }) => {
   const [activeDrag, setActiveDrag] = useState(null);
   const [text, setText] = useState('')
+  const textInput = useRef(null)
 
   useDndMonitor({
     onDragStart: (event) => {
@@ -26,13 +27,28 @@ const PlayerSelection = ({
       alert('Please add a name!')
       return
     }
-    if(text.length > 16) {
-      alert('Please type a name with 16 characters or less!')
-      setText('') //necessary?
+    if(text.length > 600) {
+      alert('Too long!')
       return
     }
+    var splitted = text.split(',')
+    for(const each of splitted) {
+      var toCheck = each.trim()
+      if(toCheck.length === 0) {
+        alert('Please add a name!')
+        textInput.current.focus()
+        return
+      }
+      if(toCheck.length > 16) {
+        alert('Name is too long! (16 Characters)')
+        textInput.current.focus()
+        return
+      }
+    }
+    
     addPlayer(text)
     setText('')
+    textInput.current.focus()
   }
   
   return (
@@ -60,12 +76,15 @@ const PlayerSelection = ({
         <form onSubmit={onSubmit}>
           <input 
           type='text' 
+          ref={textInput}
           placeholder='Player Name' 
           className='player-input-text'
           value={text} 
           onChange={(e) => setText(e.target.value)}/>
-          <input type='submit' value='Add' className='player-input-btn'/>
+          <input type='submit' value='Enter' className='player-input-btn'/>
         </form>
+        <i className='separate-text'>Can add multiple names using commas</i>
+        <i className='separate-text'>e.g. player1, player2, etc</i>
       </div>
     </div>
   )
