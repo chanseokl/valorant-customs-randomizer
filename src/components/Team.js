@@ -19,7 +19,9 @@ const Team = ({
   toggleChoiceLock,
   playersLocks,
   agents,
-  agentsLocks
+  agentsLocks,
+  randomizePlayer,
+  randomizeAgent,
  }) => {
 
   var lockComponent = <BsUnlockFill title='Fill out options to lock'className='unlock-unavailable'/>
@@ -45,6 +47,9 @@ const Team = ({
               toggleChoiceLock={toggleChoiceLock}
               playerLock={teamLock ? teamLock : playersLocks[index]}
               agentLock={teamLock ? teamLock : agentsLocks[index]}
+              
+              randomizePlayer={randomizePlayer}
+              randomizeAgent={randomizeAgent}
               
               id={(isAttack ? "Attacker" : "Defender") + index} 
               key={(isAttack ? "Attacker" : "Defender") + index} 

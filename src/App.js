@@ -183,38 +183,32 @@ function App() {
     setDefensePlayers(defensePClone)
     setPlayerNames(available)
   }
-  //Randomizes agents that are not locked
-  const randomizeAgents = () => {
-    var compAttackArray = []
-    var compDefenseArray = []
+
+  const getCompositionArray = () => {
     //Composition is completely random
-    if(compOption === 'random') {
-      compAttackArray = ['r', 'r', 'r', 'r', 'r']
-      compDefenseArray = [...compAttackArray]
-    }
+    if(compOption === 'random') return ['r', 'r', 'r', 'r', 'r']
     //Completely random, except at least one smoke on each team
-    else if(compOption === 'oneSmoke') {
-      compAttackArray = ['controllers', 'r', 'r', 'r', 'r']
-      compDefenseArray = [...compAttackArray]
-    }
+    else if(compOption === 'oneSmoke') return ['controllers', 'r', 'r', 'r', 'r']
     //1 of each role + 1 random class
-    else if(compOption === 'balanced') {
-      compAttackArray = ['controllers', 'sentinels', 'initiators', 'duelists', 'r']
-      compDefenseArray = [...compAttackArray]
-    }
+    else if(compOption === 'balanced') return ['controllers', 'sentinels', 'initiators', 'duelists', 'r']
     //Allows user to pick what roles to pick for each thing
     else if(compOption === 'custom') {
-
+      return
     }
     else if(compOption === 'tdm') {} //Not sure how this is relevant, think about later
     else if(compOption === 'best') {} //TBD, look up map comps and see what is good
 
+  }
+  //Randomizes agents that are not locked
+  const randomizeAgents = () => {
+    var compAttackArray = getCompositionArray()
+    var compDefenseArray = getCompositionArray()
+
     //Object that shows which agents are available in which class
-    var attackAvailable = JSON.parse(JSON.stringify(agentList))
-    var defenseAvailable = JSON.parse(JSON.stringify(agentList))
     var attackAClone = [...attackAgents]
     var defenseAClone = [...defenseAgents]
-    const ranAgents = (teamLock, compArray, agentsLocks, available, aClone, sideName) => {
+    const ranAgents = (teamLock, compArray, agentsLocks, aClone, sideName) => {
+      var available = JSON.parse(JSON.stringify(agentList))
       var numLocked = 0
       //goes through team and sees who is locked, to get rid of that from what is available
       for(let i = 0; i < 5; i++) {
@@ -274,10 +268,87 @@ function App() {
       }
     }
 
-    ranAgents(attackTeamLock, compAttackArray, attackAgentsLocks, attackAvailable, attackAClone, 'Attack')
-    ranAgents(defenseTeamLock, compDefenseArray, defenseAgentsLocks, defenseAvailable, defenseAClone, 'Defense')
+    ranAgents(attackTeamLock, compAttackArray, attackAgentsLocks, attackAClone, 'Attack')
+    ranAgents(defenseTeamLock, compDefenseArray, defenseAgentsLocks, defenseAClone, 'Defense')
     setAttackAgents(attackAClone)
     setDefenseAgents(defenseAClone)
+  }
+  //Randomizes single player slot's player name
+  const randomizePlayer = (isAttack, num) => {
+    if(playerNames.length === 0) {
+      alert('No players left!')
+      return
+    }
+    if(isAttack) {
+      var curTeam = [...attackPlayers]
+      var curSetTeam = setAttackPlayers
+    }
+    else {
+      curTeam = [...defensePlayers]
+      curSetTeam = setDefensePlayers
+    }
+    const newInd = getRandomInt(playerNames.length)
+    var pNameClone = [...playerNames]
+    var replacement = playerNames[newInd]
+
+    pNameClone[newInd] = curTeam[num]
+    curTeam[num] = replacement
+
+    setPlayerNames(pNameClone)
+    curSetTeam(curTeam)
+  }
+  //Randomizes single player slot's agent
+  const randomizeAgent = (isAttack, num) => {
+    //Sets variables depending on side
+    if(isAttack) {
+      var curTeam = [...attackAgents]
+      var curSetTeam = setAttackAgents
+    }
+    else {
+      curTeam = [...defenseAgents]
+      curSetTeam = setDefenseAgents
+    }
+
+    //Gets current agent list and filters out what agents are already in team
+    var available = JSON.parse(JSON.stringify(agentList))
+    var compArray = getCompositionArray()
+
+    for(const curAgent of curTeam) {
+      if(curAgent !== null && curAgent !== curTeam[num]) {
+        const curClass = agentClassDict[curAgent]
+        available[curClass] = available[curClass].filter((n) => n !== curAgent)
+        const classIndex = compArray.indexOf(curClass) 
+        if(classIndex === -1) {
+          const rIndex = compArray.indexOf('r') 
+          if(rIndex !== -1) compArray = compArray.filter((c, i) => i !== rIndex)
+        }
+        else compArray = compArray.filter((c, i) => i !== classIndex)
+      }
+    }
+    var totalAgents = Object.keys(available).reduce((a, c) => a + available[c].length, 0)
+    if(totalAgents === 0) {
+      alert('Not a single agent available?!')
+      return
+    }
+
+    var newRole = compArray[getRandomInt(compArray.length)]
+    console.log(newRole)
+    newRole = (newRole !== 'r' && available[newRole].length === 0) ? 'r' : newRole
+    if(newRole === 'r') {
+      var ranTotalIndex = getRandomInt(totalAgents)
+      for(const key of Object.keys(available)) {
+        if(ranTotalIndex >= available[key].length) ranTotalIndex -= available[key].length
+        else {
+          //Weird code to avoid warning with ranTotalIndex being outside local scope
+          const curIndex = ranTotalIndex
+          curTeam[num] = available[key][curIndex]
+          available[key] = available[key].filter((c, j) => j !== curIndex)
+          break;
+        }
+      }
+    }
+    else curTeam[num] = available[newRole][getRandomInt(available[newRole].length)]
+    curSetTeam(curTeam)
   }
   //Randomizes the map if not locked
   const randomizeMap = () => {
@@ -516,6 +587,8 @@ function App() {
           randomizeAll={randomizeAll}
           randomizePlayers={randomizePlayers}
           randomizeAgents={randomizeAgents}
+          randomizePlayer={randomizePlayer}
+          randomizeAgent={randomizeAgent}
           randomizeMap={randomizeMap}
         />
 

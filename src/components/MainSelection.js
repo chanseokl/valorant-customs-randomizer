@@ -30,6 +30,8 @@ const MainSelection = ({
   randomizePlayers,
   randomizeAgents,
   randomizeMap,
+  randomizePlayer,
+  randomizeAgent,
 }) => {
   return (
     <div className='Main-Selection'>
@@ -43,6 +45,8 @@ const MainSelection = ({
         playersLocks={attackPlayersLocks}
         agents={attackAgents}
         agentsLocks={attackAgentsLocks}
+        randomizePlayer={randomizePlayer}
+        randomizeAgent={randomizeAgent}
       />
 
       <MapSelect 
@@ -68,6 +72,8 @@ const MainSelection = ({
         playersLocks={defensePlayersLocks}
         agents={defenseAgents}
         agentsLocks={defenseAgentsLocks}
+        randomizePlayer={randomizePlayer}
+        randomizeAgent={randomizeAgent}
       />
     </div>
   )

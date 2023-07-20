@@ -15,6 +15,8 @@ const PlayerSlot = ({
   toggleChoiceLock, //isAttack, num, isPlayer
   playerLock,
   agentLock,
+  randomizePlayer,
+  randomizeAgent,
 }) => {
   const [dragData, setDragData] = useState(null)
   const accepted = ['agent', 'playerName']
@@ -63,6 +65,7 @@ const PlayerSlot = ({
         <div>
           <FaRandom 
             className='lock-available'
+            onClick={() => randomizePlayer(isAttack, num)}
           /> 
           <BsUnlockFill 
             className='lock-available' 
@@ -95,6 +98,7 @@ const PlayerSlot = ({
       <div>
         <FaRandom 
           className='lock-available'
+          onClick={() => randomizeAgent(isAttack, num)}
         /> 
         <BsUnlockFill 
           className='lock-available' 
