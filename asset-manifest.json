@@ -1,9 +1,10 @@
 {
   "files": {
     "main.css": "/valorant-customs-randomizer/static/css/main.1c248279.css",
-    "main.js": "/valorant-customs-randomizer/static/js/main.8659ca25.js",
+    "main.js": "/valorant-customs-randomizer/static/js/main.0f3bcdb5.js",
     "static/js/787.64ae2c3e.chunk.js": "/valorant-customs-randomizer/static/js/787.64ae2c3e.chunk.js",
     "static/media/haven.webp": "/valorant-customs-randomizer/static/media/haven.bafced834c6215674a1d.webp",
+    "static/media/sunset.webp": "/valorant-customs-randomizer/static/media/sunset.7faea6880cfd70bb9141.webp",
     "static/media/lotus.webp": "/valorant-customs-randomizer/static/media/lotus.22823ff2d6a1564e1a61.webp",
     "static/media/neon-icon.png": "/valorant-customs-randomizer/static/media/neon-icon.312b707a418dc8d35116.png",
     "static/media/breeze.webp": "/valorant-customs-randomizer/static/media/breeze.677c659f3fe53d30a080.webp",
@@ -41,11 +42,11 @@
     "static/media/chamber-icon.png": "/valorant-customs-randomizer/static/media/chamber-icon.d83a9aca6eb590d9468f.png",
     "index.html": "/valorant-customs-randomizer/index.html",
     "main.1c248279.css.map": "/valorant-customs-randomizer/static/css/main.1c248279.css.map",
-    "main.8659ca25.js.map": "/valorant-customs-randomizer/static/js/main.8659ca25.js.map",
+    "main.0f3bcdb5.js.map": "/valorant-customs-randomizer/static/js/main.0f3bcdb5.js.map",
     "787.64ae2c3e.chunk.js.map": "/valorant-customs-randomizer/static/js/787.64ae2c3e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1c248279.css",
-    "static/js/main.8659ca25.js"
+    "static/js/main.0f3bcdb5.js"
   ]
 }
